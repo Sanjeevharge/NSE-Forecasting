@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="100%" height="100%">
+<style>
+  .title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 18px; font-weight: 700; fill: #1e293b; }
+  .subtitle { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 12px; fill: #64748b; }
+  .axis-label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 13px; font-weight: 600; fill: #334155; }
+  .tick { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 11px; fill: #64748b; }
+  .legend { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 12px; font-weight: 500; fill: #334155; }
+  .grid { stroke: #e2e8f0; stroke-width: 1; stroke-dasharray: 4,4; }
+  .bar-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 11px; font-weight: 600; fill: #1e293b; text-anchor: middle; }
+</style>
+<rect width="760" height="420" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+<text x="70" y="36" class="title">Loss by Volatility Regime (Mean QLIKE)</text>
+<text x="70" y="54" class="subtitle">Lower is better. Asymmetric loss heavily penalizes underestimating volatility risk.</text>
+<rect x="340" y="24" width="12" height="12" rx="3" fill="#f59e0b"/>
+<text x="358" y="35" class="legend">EWMA</text>
+<rect x="440" y="24" width="12" height="12" rx="3" fill="#3b82f6"/>
+<text x="458" y="35" class="legend">HAR</text>
+<rect x="540" y="24" width="12" height="12" rx="3" fill="#10b981"/>
+<text x="558" y="35" class="legend">LightGBM</text>
+<rect x="640" y="24" width="12" height="12" rx="3" fill="#ef4444"/>
+<text x="658" y="35" class="legend">naive</text>
+<line x1="70" y1="360.0" x2="730" y2="360.0" class="grid"/>
+<text x="58" y="364.0" class="tick" text-anchor="end">0.0</text>
+<line x1="70" y1="291.7647058823529" x2="730" y2="291.7647058823529" class="grid"/>
+<text x="58" y="295.7647058823529" class="tick" text-anchor="end">0.4</text>
+<line x1="70" y1="223.52941176470586" x2="730" y2="223.52941176470586" class="grid"/>
+<text x="58" y="227.52941176470586" class="tick" text-anchor="end">0.8</text>
+<line x1="70" y1="155.2941176470588" x2="730" y2="155.2941176470588" class="grid"/>
+<text x="58" y="159.2941176470588" class="tick" text-anchor="end">1.2</text>
+<line x1="70" y1="87.05882352941171" x2="730" y2="87.05882352941171" class="grid"/>
+<text x="58" y="91.05882352941171" class="tick" text-anchor="end">1.6</text>
+<rect x="78.0" y="70" width="204.0" height="290" rx="6" fill="#f8fafc" opacity="0.6"/>
+<rect x="119.0" y="265.2" width="26" height="94.8" rx="4" fill="#f59e0b"/>
+<text x="132.0" y="259.2" class="bar-text">0.556</text>
+<rect x="151.0" y="275.5" width="26" height="84.5" rx="4" fill="#3b82f6"/>
+<text x="164.0" y="269.5" class="bar-text">0.496</text>
+<rect x="183.0" y="274.8" width="26" height="85.2" rx="4" fill="#10b981"/>
+<text x="196.0" y="268.8" class="bar-text">0.500</text>
+<rect x="215.0" y="99.0" width="26" height="261.0" rx="4" fill="#ef4444"/>
+<text x="228.0" y="93.0" class="bar-text">1.530</text>
+<text x="180.0" y="390" class="axis-label" text-anchor="middle">Low Volatility</text>
+<rect x="298.0" y="70" width="204.0" height="290" rx="6" fill="#f8fafc" opacity="0.6"/>
+<rect x="339.0" y="271.3" width="26" height="88.7" rx="4" fill="#f59e0b"/>
+<text x="352.0" y="265.3" class="bar-text">0.520</text>
+<rect x="371.0" y="267.2" width="26" height="92.8" rx="4" fill="#3b82f6"/>
+<text x="384.0" y="261.2" class="bar-text">0.544</text>
+<rect x="403.0" y="268.9" width="26" height="91.1" rx="4" fill="#10b981"/>
+<text x="416.0" y="262.9" class="bar-text">0.534</text>
+<rect x="435.0" y="139.6" width="26" height="220.4" rx="4" fill="#ef4444"/>
+<text x="448.0" y="133.6" class="bar-text">1.292</text>
+<text x="400.0" y="390" class="axis-label" text-anchor="middle">Mid Volatility</text>
+<rect x="518.0" y="70" width="204.0" height="290" rx="6" fill="#f8fafc" opacity="0.6"/>
+<rect x="559.0" y="265.1" width="26" height="94.9" rx="4" fill="#f59e0b"/>
+<text x="572.0" y="259.1" class="bar-text">0.556</text>
+<rect x="591.0" y="263.3" width="26" height="96.7" rx="4" fill="#3b82f6"/>
+<text x="604.0" y="257.3" class="bar-text">0.567</text>
+<rect x="623.0" y="261.2" width="26" height="98.8" rx="4" fill="#10b981"/>
+<text x="636.0" y="255.2" class="bar-text">0.579</text>
+<rect x="655.0" y="179.9" width="26" height="180.1" rx="4" fill="#ef4444"/>
+<text x="668.0" y="173.9" class="bar-text">1.056</text>
+<text x="620.0" y="390" class="axis-label" text-anchor="middle">High Volatility</text>
+</svg>
