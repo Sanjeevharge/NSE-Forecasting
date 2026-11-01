@@ -50,6 +50,48 @@ Folds are grouped into terciles based on 22-day realized volatility at test time
 - **Trailing window limits**: Trailing 5-day volatility performs poorly as a direct forward forecast (+143% higher QLIKE loss).
 
 ---
+## Risk-Profile Layer (simulated profiles)
+
+Turns the out-of-sample volatility forecasts into profile-specific position sizes and volatility alerts, and scores them against realized forward volatility.
+
+> **The investor profiles are simulated.** There are no real users in this project. Prices, forecasts and realized volatility are real; only the profiles' risk budgets are assumed.
+
+### Method
+- **Profiles:** conservative / balanced / aggressive, with target annualised vol of 8% / 12% / 18%, alert thresholds of 20% / 28% / 40%, and a 1.0x cap (no leverage).
+- **Sizing:** `multiplier = min(cap, target_vol / forecast_vol)`, held for H=5 days. Sizing and alerts read only the forecast, never the realized value.
+- **Rebalancing:** every 5 trading days, so forward windows never overlap.
+- **Metrics:** *breach rate* (share of periods where the scaled position's realized vol exceeds 1.5x the target), *tracking error* (uncapped positions only), and alert precision / recall / F1.
+- **Uncertainty:** fold-level bootstrap CIs, plus a paired bootstrap of each model against EWMA.
+
+### Results (conservative profile; 6,240 position-periods per model)
+
+| Model | Breach rate, all regimes (95% CI) | Breach rate, high-vol regime | Alert recall (>40% vol) |
+| :--- | :---: | :---: | :---: |
+| EWMA | 10.9% (9.7-12.2) | 7.1% | 30.3% |
+| HAR (Ridge) | 12.4% (10.3-14.7) | 14.6% | 10.8% |
+| LightGBM | 13.1% (10.7-16.2) | 16.2% | 3.1% |
+| Naive (RV5) | 23.8% (22.9-24.9) | 16.9% | 33.8% |
+
+Paired difference vs EWMA, in breach-rate points (95% CI): all regimes, HAR +1.5 (-0.2 to 3.6), LightGBM +2.1 (0.1 to 5.1); high-vol regime, HAR +7.4 (4.3 to 11.7), LightGBM +8.9 (4.5 to 15.2).
+
+### Findings
+- **EWMA is the safest forecast for risk control.** HAR and LightGBM breach about twice as often in high-volatility regimes, and the gap is outside the bootstrap CI.
+- **The ML forecasts under-alert.** LightGBM flags only 3.1% of >40% volatility periods, because its predictions shrink toward the mean.
+- **EWMA vs HAR overall is a tie** (CI includes 0). LightGBM is only marginally worse than EWMA.
+
+### Limitations
+- **Sizing results are identical across profiles whenever the cap does not bind**, because `realized/target = fwd_rv/forecast` and the target cancels. Profiles differ only through the cap and the alert thresholds, so the sizing table is reported once.
+- **Targets were changed after a first run.** The initial 10% / 18% / 30% targets left 79-91% of the aggressive profile's positions capped (the profile did nothing), so they were lowered to 8% / 12% / 18%. This was a design fix and not chosen to favor any model, but it was made after seeing results.
+- **Tracking error does not separate the real models** (CIs overlap at roughly 0.37). Breach rate and alert metrics do.
+- The breach multiplier (1.5x) is a judgement call. Single-name positions only; no transaction costs or portfolio effects.
+- The universe is today's large-cap names, so survivorship bias is possible.
+- This is not a recommender and uses no user data.
+
+### Run
+```bash
+python run.py --profiles      # first run recomputes forecasts (~1-2 min), then caches
+python run.py --test          # includes test_profiles.py
+```
 
 ## Methodology
 
