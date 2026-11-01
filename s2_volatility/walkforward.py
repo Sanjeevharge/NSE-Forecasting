@@ -42,8 +42,11 @@ def fit_predict(train, test):
     return preds
 
 
-def run(df: pd.DataFrame):
+def run(df: pd.DataFrame, return_preds: bool = False):
+    """Walk-forward evaluation. With return_preds=True also returns the per-row
+    out-of-sample forecasts (needed by profiles.py); default behaviour is unchanged."""
     df = df.dropna(subset=["y"]).copy()
+    pred_frames = []
     dates = np.sort(df["date"].unique())
     rows = []
     start = INIT_TRAIN_DAYS
@@ -57,7 +60,14 @@ def run(df: pd.DataFrame):
         # regime label from information known at test time (terciles of rv22 in train)
         q1, q2 = train["rv22"].quantile([1 / 3, 2 / 3])
         test["regime"] = np.where(test["rv22"] <= q1, "low", np.where(test["rv22"] <= q2, "mid", "high"))
-        for name, p in fit_predict(train, test).items():
+        fold_preds = fit_predict(train, test)
+        if return_preds:
+            for name, p in fold_preds.items():
+                pred_frames.append(pd.DataFrame({
+                    "fold": fold, "date": test["date"].values, "ticker": test["ticker"].values,
+                    "model": name, "regime": test["regime"].values,
+                    "pred": np.asarray(p, dtype=float), "fwd_rv": test["fwd_rv"].values}))
+        for name, p in fold_preds.items():
             for reg, idx in [("all", np.ones(len(test), bool))] + [(r, (test["regime"] == r).values) for r in ["low", "mid", "high"]]:
                 if idx.sum() == 0:
                     continue
@@ -66,7 +76,10 @@ def run(df: pd.DataFrame):
                                  mae=float(np.mean(np.abs(tv - p[idx]))), qlike=qlike(tv, p[idx]), n=int(idx.sum())))
         fold += 1
         start += TEST_DAYS
-    return pd.DataFrame(rows)
+    res = pd.DataFrame(rows)
+    if return_preds:
+        return res, pd.concat(pred_frames, ignore_index=True)
+    return res
 
 
 def summarize(res: pd.DataFrame):

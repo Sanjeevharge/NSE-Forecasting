@@ -24,12 +24,13 @@ Examples:
     parser.add_argument("--evaluate", action="store_true", help="Run walk-forward simulation across all folds")
     parser.add_argument("--test", action="store_true", help="Execute pytest verification suite")
     parser.add_argument("--visualize", action="store_true", help="Generate SVG charts from results.csv")
+    parser.add_argument("--profiles", action="store_true", help="Run the risk-profile layer (sizing + vol alerts) on out-of-sample forecasts")
     parser.add_argument("--download", action="store_true", help="Download raw prices from Yahoo Finance")
     
     args = parser.parse_args()
 
     # Default action if no arguments provided
-    if not any([args.evaluate, args.test, args.visualize, args.download]):
+    if not any([args.evaluate, args.test, args.visualize, args.download, args.profiles]):
         parser.print_help()
         print("\n[INFO] Running complete walk-forward evaluation by default:\n")
         args.evaluate = True
@@ -93,6 +94,10 @@ Examples:
             print(f">>> Charts updated in {ASSETS_DIR}")
         except Exception as e:
             print(f"Note: Visuals update skipped: {e}")
+
+    if args.profiles:
+        import profiles
+        profiles.main()
 
     if args.visualize and not args.evaluate:
         import pandas as pd
